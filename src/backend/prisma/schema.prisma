@@ -1,0 +1,138 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TipoDocumento {
+  CC
+  TI
+  CE
+  PP
+}
+
+enum Genero {
+  Masculino
+  Femenino
+  Otro
+  Prefiero_no_decir
+}
+
+enum NivelAcademico {
+  Primaria
+  Bachiller
+  Técnico
+  Tecnólogo
+  Profesional
+  Posgrado
+  Ninguno
+}
+
+enum Discapacidad {
+  Ninguna
+  Física
+  Sensorial
+  Cognitiva
+  Psicosocial
+  Múltiple
+}
+
+enum GrupoEtnico {
+  Ninguno
+  Indígena
+  Afrocolombiano
+  Raizal
+  Palenquero
+  Rom
+}
+
+enum Rol {
+  coordinador
+  instructor
+  aprendiz
+}
+
+model Usuario {
+  id                 Int           @id @default(autoincrement())
+  nombres            String        @db.VarChar(100)
+  apellidos          String        @db.VarChar(100)
+  tipo_documento     TipoDocumento
+  numero_documento   String        @unique @db.VarChar(30)
+  fecha_nacimiento   DateTime      @db.Date
+  genero             Genero?
+  telefono           String        @db.VarChar(20)
+  direccion          String?       @db.VarChar(150)
+  ciudad_residencia  String?       @db.VarChar(100)
+  departamento       String?       @db.VarChar(100)
+  nivel_academico    NivelAcademico?
+  titulo_profesional String?       @db.VarChar(100)
+  experiencia_anios  Int?          @db.Integer
+  certificaciones    String?
+  eps                String?       @db.VarChar(100)
+  discapacidad       Discapacidad?
+  grupo_etnico       GrupoEtnico?
+  sisben             String?       @db.VarChar(20)
+  estrato            Int?          @db.Integer
+  correo             String        @unique @db.VarChar(100)
+  contrasena         String        @db.VarChar(255)
+  rol                Rol
+  fichas_instructor  Ficha[]       @relation("InstructorFichas")
+  fichas_coordinador Ficha[]       @relation("CoordinadorFichas")
+  inscripciones      Inscripcion[]
+}
+
+model Programa {
+  id               Int          @id @default(autoincrement())
+  codigo           String       @unique @db.VarChar(20)
+  nombre           String       @db.VarChar(100)
+  tipo_formacion   String       @db.VarChar(50)
+  nivel_formacion  String       @db.VarChar(50)
+  area_formacion   String?      @db.VarChar(100)
+  modalidad        String       @db.VarChar(50)
+  duracion         Int          @db.Integer
+  requisitos_ingreso String?
+  competencias     String?
+  perfil_egresado  String?
+  estado           String       @default("activo") @db.VarChar(20)
+  version          Int          @db.Integer @default(1)
+  fecha_creacion   DateTime     @default(now())
+  fichas           Ficha[]
+}
+
+model Ficha {
+  id              Int           @id @default(autoincrement())
+  codigo          String        @unique @db.VarChar(20)
+  programaId      Int           @db.Integer
+  usuarioId       Int           @db.Integer
+  coordinadorId   Int?          @db.Integer
+  modalidad       String        @db.VarChar(50)
+  jornada         String        @db.VarChar(50)
+  duracion        Int           @db.Integer
+  cupos           Int           @db.Integer
+  centro_formacion String       @db.VarChar(100)
+  regional        String       @db.VarChar(100)
+  empresa         String?      @db.VarChar(100)
+  estado          String        @db.VarChar(20)
+  fecha_creacion  DateTime      @default(now()) @db.Date
+  fecha_aprobacion DateTime?    @db.Date
+  fecha_inicio    DateTime      @db.Date
+  fecha_fin       DateTime      @db.Date
+  observaciones   String?
+  programa        Programa      @relation(fields: [programaId], references: [id], onDelete: Restrict)
+  instructor      Usuario       @relation("InstructorFichas", fields: [usuarioId], references: [id], onDelete: Restrict)
+  coordinador     Usuario?      @relation("CoordinadorFichas", fields: [coordinadorId], references: [id], onDelete: SetNull)
+  inscripciones   Inscripcion[]
+}
+
+model Inscripcion {
+  id                Int       @id @default(autoincrement())
+  fichaId           Int       @db.Integer
+  usuarioId         Int       @db.Integer
+  fecha_inscripcion DateTime  @default(now()) @db.Date
+  estado            String    @default("inscrito") @db.VarChar(20)
+  ficha             Ficha     @relation(fields: [fichaId], references: [id], onDelete: Cascade)
+  usuario           Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+}
