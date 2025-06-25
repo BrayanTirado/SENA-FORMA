@@ -68,8 +68,8 @@ model Usuario {
   ciudad_residencia  String?       @db.VarChar(100)
   departamento       String?       @db.VarChar(100)
   nivel_academico    NivelAcademico?
-  titulo_profesional String?       @db.VarChar(100)
-  experiencia_anios  Int?          @db.Integer
+  titulo_profesional String        @db.VarChar(100) @default("No aplica")
+  experiencia_anios  Int           @db.Integer @default(0)
   certificaciones    String?
   eps                String?       @db.VarChar(100)
   discapacidad       Discapacidad?
@@ -82,7 +82,7 @@ model Usuario {
   fichas_instructor  Ficha[]       @relation("InstructorFichas")
   fichas_coordinador Ficha[]       @relation("CoordinadorFichas")
   inscripciones      Inscripcion[]
-}
+}         
 
 model Programa {
   id               Int          @id @default(autoincrement())
