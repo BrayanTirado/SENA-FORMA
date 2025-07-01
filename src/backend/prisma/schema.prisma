@@ -15,44 +15,44 @@ enum TipoDocumento {
 }
 
 enum Genero {
-  Masculino
-  Femenino
-  Otro
-  Prefiero_no_decir
+  MASCULINO         @map("Masculino")
+  FEMENINO          @map("Femenino")
+  OTRO              @map("Otro")
+  PREFIERO_NO_DECIR @map("Prefiero_no_decir")
 }
 
 enum NivelAcademico {
-  Primaria
-  Bachiller
-  Técnico
-  Tecnólogo
-  Profesional
-  Posgrado
-  Ninguno
+  PRIMARIA     @map("Primaria")
+  BACHILLER    @map("Bachiller")
+  TECNICO      @map("Técnico")
+  TECNOLOGO    @map("Tecnólogo")
+  PROFESIONAL  @map("Profesional")
+  POSGRADO     @map("Posgrado")
+  NINGUNO      @map("Ninguno")
 }
 
 enum Discapacidad {
-  Ninguna
-  Física
-  Sensorial
-  Cognitiva
-  Psicosocial
-  Múltiple
+  NINGUNA      @map("Ninguna")
+  FISICA       @map("Física")
+  SENSORIAL    @map("Sensorial")
+  COGNITIVA    @map("Cognitiva")
+  PSICOSOCIAL  @map("Psicosocial")
+  MULTIPLE     @map("Múltiple")
 }
 
 enum GrupoEtnico {
-  Ninguno
-  Indígena
-  Afrocolombiano
-  Raizal
-  Palenquero
-  Rom
+  NINGUNO         @map("Ninguno")
+  INDIGENA        @map("Indígena")
+  AFROCOLOMBIANO  @map("Afrocolombiano")
+  RAIZAL          @map("Raizal")
+  PALENQUERO      @map("Palenquero")
+  ROM             @map("Rom")
 }
 
 enum Rol {
-  coordinador
-  instructor
-  aprendiz
+  COORDINADOR
+  INSTRUCTOR
+  APRENDIZ
 }
 
 model Usuario {
@@ -85,46 +85,46 @@ model Usuario {
 }         
 
 model Programa {
-  id               Int          @id @default(autoincrement())
-  codigo           String       @unique @db.VarChar(20)
-  nombre           String       @db.VarChar(100)
-  tipo_formacion   String       @db.VarChar(50)
-  nivel_formacion  String       @db.VarChar(50)
-  area_formacion   String?      @db.VarChar(100)
-  modalidad        String       @db.VarChar(50)
-  duracion         Int          @db.Integer
+  id                 Int       @id @default(autoincrement())
+  codigo             String    @unique @db.VarChar(20)
+  nombre             String    @db.VarChar(100)
+  tipo_formacion     String    @db.VarChar(50)
+  nivel_formacion    String    @db.VarChar(50)
+  area_formacion     String?   @db.VarChar(100)
+  modalidad          String    @db.VarChar(50)
+  duracion           Int       @db.Integer
   requisitos_ingreso String?
-  competencias     String?
-  perfil_egresado  String?
-  estado           String       @default("activo") @db.VarChar(20)
-  version          Int          @db.Integer @default(1)
-  fecha_creacion   DateTime     @default(now())
-  fichas           Ficha[]
+  competencias       String?
+  perfil_egresado    String?
+  estado             String    @default("activo") @db.VarChar(20)
+  version            Int       @db.Integer @default(1)
+  fecha_creacion     DateTime  @default(now())
+  fichas             Ficha[]
 }
 
 model Ficha {
-  id              Int           @id @default(autoincrement())
-  codigo          String        @unique @db.VarChar(20)
-  programaId      Int           @db.Integer
-  usuarioId       Int           @db.Integer
-  coordinadorId   Int?          @db.Integer
-  modalidad       String        @db.VarChar(50)
-  jornada         String        @db.VarChar(50)
-  duracion        Int           @db.Integer
-  cupos           Int           @db.Integer
-  centro_formacion String       @db.VarChar(100)
-  regional        String       @db.VarChar(100)
-  empresa         String?      @db.VarChar(100)
-  estado          String        @db.VarChar(20)
-  fecha_creacion  DateTime      @default(now()) @db.Date
-  fecha_aprobacion DateTime?    @db.Date
-  fecha_inicio    DateTime      @db.Date
-  fecha_fin       DateTime      @db.Date
-  observaciones   String?
-  programa        Programa      @relation(fields: [programaId], references: [id], onDelete: Restrict)
-  instructor      Usuario       @relation("InstructorFichas", fields: [usuarioId], references: [id], onDelete: Restrict)
-  coordinador     Usuario?      @relation("CoordinadorFichas", fields: [coordinadorId], references: [id], onDelete: SetNull)
-  inscripciones   Inscripcion[]
+  id               Int        @id @default(autoincrement())
+  codigo           String     @unique @db.VarChar(20)
+  programaId       Int        @db.Integer
+  usuarioId        Int        @db.Integer
+  coordinadorId    Int?       @db.Integer
+  modalidad        String     @db.VarChar(50)
+  jornada          String     @db.VarChar(50)
+  duracion         Int        @db.Integer
+  cupos            Int        @db.Integer
+  centro_formacion String     @db.VarChar(100)
+  regional         String     @db.VarChar(100)
+  empresa          String?    @db.VarChar(100)
+  estado           String     @db.VarChar(20)
+  fecha_creacion   DateTime   @default(now()) @db.Date
+  fecha_aprobacion DateTime?  @db.Date
+  fecha_inicio     DateTime   @db.Date
+  fecha_fin        DateTime   @db.Date
+  observaciones    String?
+  programa         Programa   @relation(fields: [programaId], references: [id], onDelete: Restrict)
+  instructor       Usuario    @relation("InstructorFichas", fields: [usuarioId], references: [id], onDelete: Restrict)
+  coordinador      Usuario?   @relation("CoordinadorFichas", fields: [coordinadorId], references: [id], onDelete: SetNull)
+  inscripciones    Inscripcion[]
 }
 
 model Inscripcion {
@@ -136,3 +136,4 @@ model Inscripcion {
   ficha             Ficha     @relation(fields: [fichaId], references: [id], onDelete: Cascade)
   usuario           Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }
+
